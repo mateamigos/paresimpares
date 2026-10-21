@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full w-full overflow-hidden select-none">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>El Pueblo de los Pares e Impares - Nintendo Switch Edition</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- FontAwesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Google Fonts: Fredoka & Outfit (Estilo Nintendo Switch / Arcade) -->
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Outfit:wght@600;800;900&display=swap');
+
+    /* CONFIGURACIÓN ESTRICTA CERO SCROLL 100DVH */
+    html, body {
+      height: 100dvh;
+      width: 100vw;
+      margin: 0;
+      padding: 0;
+      overflow: hidden !important;
+      font-family: 'Fredoka', cursive, sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+
+    /* FONDO INTEGRADO DE AULA CON FALLBACK ELEGANTE */
+    body {
+      background-image: url('fondo.jpg'), url('fondo.png'), linear-gradient(135deg, #0f172a, #1e1b4b, #311042);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    /* MARCO DE CRISTAL NINTENDO SWITCH (GLASSMORPHISM) */
+    .switch-glass-card {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 3.5px solid rgba(255, 255, 255, 0.88);
+      box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.35), inset 0 2px 4px rgba(255, 255, 255, 0.9);
+    }
+
+    /* BOTONES ESTILO NINTENDO SWITCH CON DEPRESIÓN 3D */
+    .btn-switch-green {
+      background: linear-gradient(180deg, #10b981 0%, #059669 100%);
+      border-bottom: 4px solid #047857;
+      color: white;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+    }
+    .btn-switch-green:active {
+      transform: translateY(3px);
+      border-bottom-width: 1px;
+    }
+
+    .btn-switch-blue {
+      background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%);
+      border-bottom: 4px solid #1e40af;
+      color: white;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+    }
+    .btn-switch-blue:active {
+      transform: translateY(3px);
+      border-bottom-width: 1px;
+    }
+
+    .btn-switch-yellow {
+      background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+      border-bottom: 4px solid #b45309;
+      color: #0f172a;
+    }
+    .btn-switch-yellow:active {
+      transform: translateY(3px);
+      border-bottom-width: 1px;
+    }
+
+    /* ANIMACIÓN DE RESPLANDOR ELEGANTE DE LAS CASAS DESPLAZABLES (SIN CARTEL FLOATING) */
+    @keyframes houseSwitchGlow {
+      0% {
+        box-shadow: 0 0 10px #facc15, 0 0 20px #38bdf8, inset 0 0 8px #facc15;
+        border-color: #facc15;
+        transform: scale(1.02);
+      }
+      50% {
+        box-shadow: 0 0 24px #4ade80, 0 0 38px #38bdf8, inset 0 0 16px #4ade80;
+        border-color: #4ade80;
+        transform: scale(1.06);
+      }
+      100% {
+        box-shadow: 0 0 10px #facc15, 0 0 20px #38bdf8, inset 0 0 8px #facc15;
+        border-color: #facc15;
+        transform: scale(1.02);
+      }
+    }
+
+    .reachable-house-glow {
+      animation: houseSwitchGlow 1.2s infinite ease-in-out;
+      z-index: 25 !important;
+      cursor: pointer;
+    }
+
+    /* ANIMACIÓN DE HUMO PARA LAS CHIMENEAS EN SVG */
+    @keyframes smokePuff {
+      0% { transform: translateY(0) scale(0.7); opacity: 0.8; }
+      50% { transform: translateY(-5px) scale(1.1); opacity: 0.5; }
+      100% { transform: translateY(-11px) scale(1.5); opacity: 0; }
+    }
+    .smoke-1 { animation: smokePuff 2.2s infinite ease-out; }
+    .smoke-2 { animation: smokePuff 2.2s infinite ease-out 1.1s; }
+
+    /* ERROR SHAKE ANIMATION */
+    @keyframes houseErrorShake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-7px) rotate(-3deg); }
+      75% { transform: translateX(7px) rotate(3deg); }
+    }
+    .shake-error {
+      animation: houseErrorShake 0.4s ease-in-out;
+      border-color: #ef4444 !important;
+      background: #fee2e2 !important;
+      box-shadow: 0 0 30px #ef4444 !important;
+    }
+
+    /* TIPOGRAFÍA DE NÚMEROS EN LETREROS DE MADERA */
+    .wood-number-text {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 900;
+      color: #1e293b;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.9);
+    }
+
+    /* OVERLAY CANVAS PARA CONFETI */
+    #confetti-canvas {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100dvh;
+      pointer-events: none;
+      z-index: 999;
+    }
+  </style>
+</head>
+<body class="h-full w-full flex flex-col items-center justify-between p-1.5 sm:p-3 relative overflow-hidden">
+
+  <!-- Canvas de Confeti -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- CONTENEDOR PRINCIPAL QUE ENCAJA EN 100DVH -->
+  <div class="w-full max-w-4xl h-full flex flex-col justify-between items-center z-10 gap-1.5">
+
+    <!-- 1. BARRA SUPERIOR (HEADER HUD NINTENDO SWITCH) -->
+    <header class="w-full switch-glass-card rounded-2xl p-1.5 sm:p-2.5 flex items-center justify-between shadow-xl gap-2 flex-shrink-0">
+      
+      <!-- Nivel Activo y Menú -->
+      <div class="flex items-center gap-1.5">
+        <div class="bg-gradient-to-r from-red-500 to-rose-600 text-white font-black px-2.5 py-1 rounded-xl text-xs sm:text-sm shadow-md border-b-2 border-red-800 flex items-center gap-1.5">
+          <i class="fa-solid fa-gamepad"></i>
+          <span id="display-level-name">Nivel 1</span>
+        </div>
+        <button id="btn-open-menu" class="btn-switch-yellow px-2 py-1 rounded-xl text-xs font-black shadow-sm transition flex items-center gap-1">
+          <i class="fa-solid fa-bars"></i>
+          <span class="hidden sm:inline">Menú</span>
+        </button>
+      </div>
+
+      <!-- MISIÓN DEL NIVEL (SIN AYUDA SOBRE LAS TERMINACIONES DE NÚMEROS) -->
+      <div id="display-rule-badge" class="bg-gradient-to-r from-cyan-600 to-blue-700 text-white font-black px-3 py-1 rounded-xl text-xs sm:text-base flex items-center gap-2 shadow-lg border-2 border-white animate-pulse">
+        <i class="fa-solid fa-bullseye text-yellow-300 text-sm sm:text-lg"></i>
+        <span id="display-rule-text">🎯 MISIÓN: AVANZA POR NÚMEROS PARES</span>
+      </div>
+
+      <!-- Contadores y Sonido -->
+      <div class="flex items-center gap-1.5 sm:gap-2">
+        <div class="bg-slate-100/90 text-slate-800 font-extrabold px-2 py-1 rounded-xl text-xs flex items-center gap-1 border border-slate-300">
+          <i class="fa-solid fa-shoe-prints text-indigo-600"></i>
+          <span id="display-moves">Pasos: 0</span>
+        </div>
+        <div class="bg-slate-100/90 text-slate-800 font-extrabold px-2 py-1 rounded-xl text-xs flex items-center gap-1 border border-slate-300">
+          <i class="fa-solid fa-stopwatch text-rose-500"></i>
+          <span id="display-timer">00:00</span>
+        </div>
+        <button id="btn-toggle-sound" class="w-8 h-8 bg-amber-400 hover:bg-amber-300 text-slate-900 rounded-xl flex items-center justify-center font-bold shadow border-b-2 border-amber-600 transition active:scale-90" title="Sonido">
+          <i class="fa-solid fa-volume-high" id="sound-icon"></i>
+        </button>
+      </div>
+
+    </header>
+
+    <!-- 2. TABLERO DEL PUEBLO 5x5 (CASAS ILUSTRADAS SVG ESTILO ANIMAL CROSSING) -->
+    <main class="w-full flex-1 flex items-center justify-center min-h-0 py-1 overflow-hidden">
+      <div class="switch-glass-card rounded-3xl p-2 sm:p-3 shadow-2xl border-4 border-white h-full max-h-[calc(100dvh-135px)] aspect-square flex flex-col justify-between">
+        <div id="game-grid-5x5" class="grid grid-cols-5 gap-1.5 sm:gap-2 w-full h-full">
+          <!-- 25 Casas Ilustradas generadas dinámicamente -->
+        </div>
+      </div>
+    </main>
+
+    <!-- 3. BARRA INFERIOR (AVATAR DEL PERSONAJE Y CONTROLES D-PAD) -->
+    <footer class="w-full switch-glass-card rounded-2xl p-1.5 sm:p-2.5 flex items-center justify-between shadow-xl gap-2 flex-shrink-0">
+      
+      <!-- Personaje Activo con Etiqueta Ultra-Legible -->
+      <div class="flex items-center gap-2">
+        <div id="hud-avatar-frame" class="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-tr from-indigo-500 to-purple-600 p-0.5 shadow-md flex-shrink-0 border-2 border-white">
+          <!-- Avatar dinámico -->
+        </div>
+        <div class="flex flex-col">
+          <span class="text-[9px] uppercase font-black text-slate-400 tracking-wider">Jugador/a</span>
+          <div class="bg-slate-900 text-yellow-300 font-black px-2.5 py-0.5 rounded-lg text-xs sm:text-sm shadow-sm border border-yellow-400 tracking-wide flex items-center gap-1">
+            <i class="fa-solid fa-user-astronaut text-xs text-yellow-400"></i>
+            <span id="hud-character-name">MÓNICA</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Leyenda Didáctica Sutil -->
+      <div class="hidden md:flex items-center gap-3 text-xs font-bold text-slate-700 bg-white/90 px-3 py-1 rounded-xl border border-slate-300 shadow-sm">
+        <div class="flex items-center gap-1.5">
+          <span class="w-3.5 h-3.5 rounded-full bg-yellow-400 border border-white shadow-sm inline-block animate-pulse"></span>
+          <span>Casas a las que puedes moverte (Parpadean)</span>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-3.5 h-3.5 rounded-full bg-emerald-500 border border-white shadow-sm inline-block"></span>
+          <span>Camino Recorrido</span>
+        </div>
+      </div>
+
+      <!-- D-Pad Controles Táctiles y Pista -->
+      <div class="flex items-center gap-2">
+        <button id="btn-hint" class="btn-switch-yellow px-2.5 py-1.5 rounded-xl text-xs sm:text-sm font-black shadow flex items-center gap-1.5">
+          <i class="fa-solid fa-lightbulb text-amber-900"></i>
+          <span>Pista</span>
+        </button>
+
+        <!-- D-Pad Arcade Nintendo Switch -->
+        <div class="grid grid-cols-3 gap-0.5 w-20 h-14 bg-slate-800 p-1 rounded-xl shadow-inner border border-slate-600 flex-shrink-0">
+          <div></div>
+          <button id="dpad-up" class="bg-slate-600 hover:bg-slate-500 text-white rounded font-black flex items-center justify-center text-[10px] active:bg-cyan-500"><i class="fa-solid fa-caret-up"></i></button>
+          <div></div>
+          <button id="dpad-left" class="bg-slate-600 hover:bg-slate-500 text-white rounded font-black flex items-center justify-center text-[10px] active:bg-cyan-500"><i class="fa-solid fa-caret-left"></i></button>
+          <button id="dpad-down" class="bg-slate-600 hover:bg-slate-500 text-white rounded font-black flex items-center justify-center text-[10px] active:bg-cyan-500"><i class="fa-solid fa-caret-down"></i></button>
+          <button id="dpad-right" class="bg-slate-600 hover:bg-slate-500 text-white rounded font-black flex items-center justify-center text-[10px] active:bg-cyan-500"><i class="fa-solid fa-caret-right"></i></button>
+        </div>
+      </div>
+
+    </footer>
+
+  </div>
+
+  <!-- MODAL DE BIENVENIDA / CONFIGURACIÓN DE NIVEL Y PERSONAJE -->
+  <div id="welcome-modal" class="fixed inset-0 z-50 flex items-center justify-center p-3 bg-slate-900/85 backdrop-blur-md">
+    <div class="switch-glass-card rounded-3xl p-4 sm:p-6 max-w-lg w-full text-center shadow-2xl border-4 border-white flex flex-col items-center gap-3 max-h-[96dvh] overflow-y-auto">
+      
+      <div>
+        <span class="bg-red-500 text-white font-black text-[10px] sm:text-xs px-3 py-0.5 rounded-full uppercase tracking-widest shadow-sm">Nintendo Switch Edition</span>
+        <h1 class="text-xl sm:text-2xl font-black text-slate-800 mt-1 flex items-center justify-center gap-2">
+          <span>🏡 EL PUEBLO DE LOS PARES E IMPARES</span>
+        </h1>
+        <p class="text-xs text-slate-600 font-bold mt-0.5">
+          ¡Navega desde la **Salida 🚩** a la **Escuela 🏫** eligiendo la casita que cumple la misión!
+        </p>
+      </div>
+
+      <!-- 1. Selección de Personaje -->
+      <div class="w-full">
+        <h3 class="text-xs font-black uppercase tracking-wider text-slate-600 mb-1.5 text-left flex items-center gap-1">
+          <i class="fa-solid fa-users text-indigo-600"></i> 1. Elige tu Personaje:
+        </h3>
+        <div id="character-selector-grid" class="grid grid-cols-5 gap-1.5 w-full">
+          <!-- Inyectado por JS -->
+        </div>
+      </div>
+
+      <!-- 2. Selección de Nivel -->
+      <div class="w-full">
+        <h3 class="text-xs font-black uppercase tracking-wider text-slate-600 mb-1.5 text-left flex items-center gap-1">
+          <i class="fa-solid fa-layer-group text-emerald-600"></i> 2. Elige el Nivel de Juego:
+        </h3>
+        <div class="grid grid-cols-2 gap-1.5 text-left">
+          
+          <button data-level="1" class="level-card-btn bg-emerald-50 hover:bg-emerald-100 border-2 border-emerald-400 p-2 rounded-xl flex flex-col transition active:scale-95 shadow-sm">
+            <span class="font-black text-emerald-900 text-xs sm:text-sm flex items-center gap-1">
+              <i class="fa-solid fa-circle-1 text-emerald-600"></i> Pares (1 a 99)
+            </span>
+            <span class="text-[10px] text-emerald-700 font-semibold">Misión: Números Pares</span>
+          </button>
+
+          <button data-level="2" class="level-card-btn bg-indigo-50 hover:bg-indigo-100 border-2 border-indigo-300 p-2 rounded-xl flex flex-col transition active:scale-95 shadow-sm">
+            <span class="font-black text-indigo-900 text-xs sm:text-sm flex items-center gap-1">
+              <i class="fa-solid fa-circle-2 text-indigo-600"></i> Impares (1 a 99)
+            </span>
+            <span class="text-[10px] text-indigo-700 font-semibold">Misión: Números Impares</span>
+          </button>
+
+          <button data-level="3" class="level-card-btn bg-purple-50 hover:bg-purple-100 border-2 border-purple-300 p-2 rounded-xl flex flex-col transition active:scale-95 shadow-sm">
+            <span class="font-black text-purple-900 text-xs sm:text-sm flex items-center gap-1">
+              <i class="fa-solid fa-circle-3 text-purple-600"></i> Pares (100 a 999)
+            </span>
+            <span class="text-[10px] text-purple-700 font-semibold">Misión: Pares (3 Cifras)</span>
+          </button>
+
+          <button data-level="4" class="level-card-btn bg-amber-50 hover:bg-amber-100 border-2 border-amber-300 p-2 rounded-xl flex flex-col transition active:scale-95 shadow-sm">
+            <span class="font-black text-amber-900 text-xs sm:text-sm flex items-center gap-1">
+              <i class="fa-solid fa-circle-4 text-amber-600"></i> Impares (100 a 999)
+            </span>
+            <span class="text-[10px] text-amber-700 font-semibold">Misión: Impares (3 Cifras)</span>
+          </button>
+
+        </div>
+      </div>
+
+      <!-- Nota Didáctica Importante -->
+      <div class="bg-cyan-100/90 border border-cyan-300 rounded-xl p-2 text-xs text-cyan-950 font-bold w-full flex items-center gap-2 text-left">
+        <i class="fa-solid fa-lightbulb text-cyan-600 text-lg flex-shrink-0"></i>
+        <span>Las casitas a las que puedes moverte parpadearán. ¡Descubre cuál cumple la misión!</span>
+      </div>
+
+      <!-- Botón de Inicio -->
+      <button id="btn-start-game" class="btn-switch-green w-full text-white font-black text-base py-3 rounded-2xl shadow-xl flex items-center justify-center gap-2 mt-1">
+        <i class="fa-solid fa-play text-lg"></i>
+        <span>¡EMPEGAR A JUGAR!</span>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- MODAL DE VICTORIA -->
+  <div id="victory-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/85 backdrop-blur-md hidden">
+    <div class="switch-glass-card rounded-3xl p-5 max-w-sm w-full text-center shadow-2xl border-4 border-amber-400 flex flex-col items-center gap-3">
+      
+      <div class="w-16 h-16 bg-gradient-to-tr from-amber-400 to-yellow-300 rounded-full flex items-center justify-center text-3xl text-white shadow-xl -mt-10 border-4 border-white">
+        🏆
+      </div>
+
+      <h2 class="text-2xl font-black text-slate-800">¡Llegaste a la Escuela!</h2>
+      <p class="text-xs text-slate-600 font-bold">¡Has completado el camino del pueblo con éxito!</p>
+
+      <!-- Estrellas -->
+      <div id="victory-stars" class="flex items-center justify-center gap-2 text-3xl text-amber-400 my-0.5">
+        <i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star"></i>
+        <i class="fa-solid fa-star"></i>
+      </div>
+
+      <!-- Estadísticas -->
+      <div class="grid grid-cols-2 gap-2 w-full bg-slate-100 p-2.5 rounded-xl border border-slate-300 text-xs font-bold text-slate-700">
+        <div>
+          <span class="text-slate-400 uppercase text-[9px] block">Tiempo</span>
+          <span id="victory-time-val" class="text-sm text-slate-800 font-extrabold">00:00</span>
+        </div>
+        <div>
+          <span class="text-slate-400 uppercase text-[9px] block">Movimientos</span>
+          <span id="victory-moves-val" class="text-sm text-slate-800 font-extrabold">0 pasos</span>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-1.5 w-full mt-1">
+        <button id="btn-victory-next" class="btn-switch-green w-full py-2.5 rounded-xl font-black text-sm flex items-center justify-center gap-1.5">
+          <span>Siguiente Nivel</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+        <button id="btn-victory-replay" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold py-2 rounded-xl transition active:scale-95 text-xs">
+          Repetir Nivel
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT PRINCIPAL -->
+  <script>
+    /* ===================================================================
+       1. DEFINICIÓN DE PERSONAJES Y AVATARES VECTORIALES INTEGRADOS
+       =================================================================== */
+    const CHARACTERS = [
+      {
+        id: 'monica',
+        name: 'MÓNICA',
+        img: 'MONICA.png',
+        color: 'from-pink-500 to-purple-600',
+        badgeBg: 'bg-pink-600',
+        svg: `<svg viewBox="0 0 100 100" class="w-full h-full">
+                <circle cx="50" cy="50" r="48" fill="#ec4899"/>
+                <circle cx="28" cy="72" r="14" fill="none" stroke="#475569" stroke-width="4"/>
+                <circle cx="72" cy="72" r="14" fill="none" stroke="#475569" stroke-width="4"/>
+                <circle cx="28" cy="72" r="4" fill="#94a3b8"/>
+                <circle cx="72" cy="72" r="4" fill="#94a3b8"/>
+                <path d="M 35 55 L 65 55 L 60 75 L 40 75 Z" fill="#a855f7"/>
+                <circle cx="50" cy="38" r="20" fill="#fde047"/>
+                <path d="M 28 36 Q 50 15 72 36 Q 65 22 50 22 Q 35 22 28 36 Z" fill="#7e22ce"/>
+                <circle cx="43" cy="38" r="2.5" fill="#1e293b"/>
+                <circle cx="57" cy="38" r="2.5" fill="#1e293b"/>
+                <path d="M 43 46 Q 50 52 57 46" stroke="#be185d" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+              </svg>`
+      },
+      {
+        id: 'souhaila',
+        name: 'SOUHAILA',
+        img: 'SOUHAILA.png',
+        color: 'from-teal-400 to-emerald-600',
+        badgeBg: 'bg-teal-600',
+        svg: `<svg viewBox="0 0 100 100" class="w-full h-full">
+                <circle cx="50" cy="50" r="48" fill="#14b8a6"/>
+                <path d="M 30 55 L 70 55 L 75 90 L 25 90 Z" fill="#0d9488"/>
+                <path d="M 25 40 Q 50 12 75 40 L 80 75 Q 50 85 20 75 Z" fill="#9333ea"/>
+                <ellipse cx="50" cy="45" rx="16" ry="18" fill="#fdba74"/>
+                <circle cx="43" cy="43" r="2.5" fill="#1e293b"/>
+                <circle cx="57" cy="43" r="2.5" fill="#1e293b"/>
+                <path d="M 44 52 Q 50 57 56 52" stroke="#ea580c" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+              </svg>`
+      },
+      {
+        id: 'chen',
+        name: 'CHEN',
+        img: 'CHEN.png',
+        color: 'from-red-500 to-amber-600',
+        badgeBg: 'bg-red-600',
+        svg: `<svg viewBox="0 0 100 100" class="w-full h-full">
+                <circle cx="50" cy="50" r="48" fill="#ef4444"/>
+                <path d="M 30 55 L 70 55 L 68 90 L 32 90 Z" fill="#dc2626"/>
+                <path d="M 50 55 L 50 90" stroke="#facc15" stroke-width="3"/>
+                <circle cx="50" cy="38" r="20" fill="#fef08a"/>
+                <path d="M 28 32 Q 50 18 72 32 L 74 36 Q 50 25 26 36 Z" fill="#0f172a"/>
+                <circle cx="42" cy="38" r="2.5" fill="#0f172a"/>
+                <circle cx="58" cy="38" r="2.5" fill="#0f172a"/>
+                <path d="M 43 47 Q 50 52 57 47" stroke="#991b1b" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+              </svg>`
+      },
+      {
+        id: 'irene',
+        name: 'IRENE',
+        img: 'IRENE.png',
+        color: 'from-purple-500 to-indigo-600',
+        badgeBg: 'bg-purple-600',
+        svg: `<svg viewBox="0 0 100 100" class="w-full h-full">
+                <circle cx="50" cy="50" r="48" fill="#8b5cf6"/>
+                <path d="M 32 55 L 68 55 L 65 90 L 35 90 Z" fill="#a855f7"/>
+                <circle cx="70" cy="72" r="9" fill="#b45309"/>
+                <circle cx="67" cy="67" r="3" fill="#d97706"/>
+                <circle cx="50" cy="38" r="19" fill="#fde047"/>
+                <circle cx="41" cy="38" r="7" fill="none" stroke="#581c87" stroke-width="2.5"/>
+                <circle cx="59" cy="38" r="7" fill="none" stroke="#581c87" stroke-width="2.5"/>
+                <line x1="48" y1="38" x2="52" y2="38" stroke="#581c87" stroke-width="2.5"/>
+                <circle cx="41" cy="38" r="2" fill="#1e293b"/>
+                <circle cx="59" cy="38" r="2" fill="#1e293b"/>
+                <path d="M 44 48 Q 50 53 56 48" stroke="#7e22ce" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+              </svg>`
+      },
+      {
+        id: 'hugo',
+        name: 'HUGO',
+        img: 'HUGO.png',
+        color: 'from-blue-500 to-cyan-600',
+        badgeBg: 'bg-blue-600',
+        svg: `<svg viewBox="0 0 100 100" class="w-full h-full">
+                <circle cx="50" cy="50" r="48" fill="#3b82f6"/>
+                <path d="M 30 55 L 70 55 L 65 90 L 35 90 Z" fill="#2563eb"/>
+                <circle cx="50" cy="40" r="19" fill="#fde047"/>
+                <path d="M 28 35 Q 50 18 72 35 Z" fill="#ef4444"/>
+                <path d="M 45 35 L 78 35 L 75 40 L 45 38 Z" fill="#b91c1c"/>
+                <circle cx="42" cy="42" r="2.5" fill="#1e293b"/>
+                <circle cx="58" cy="42" r="2.5" fill="#1e293b"/>
+                <path d="M 43 49 Q 50 54 57 49" stroke="#1e40af" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+              </svg>`
+      }
+    ];
+
+    /* ===================================================================
+       2. REGLAS DIDÁCTICAS Y GENERACIÓN MATEMÁTICA (SIN PISTAS DE TERMINACIÓN)
+       =================================================================== */
+    const LEVEL_RULES = {
+      1: {
+        name: "Nivel 1: Pares (1-99)",
+        ruleText: "🎯 MISIÓN: NÚMEROS PARES",
+        isTarget: (n) => n % 2 === 0,
+        genTarget: () => {
+          const evens = [2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,88,90,92,94,96,98];
+          return evens[Math.floor(Math.random() * evens.length)];
+        },
+        genNonTarget: () => {
+          const odds = [1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43,45,47,49,51,53,55,57,59,61,63,65,67,69,71,73,75,77,79,81,83,85,87,89,91,93,95,97,99];
+          return odds[Math.floor(Math.random() * odds.length)];
+        }
+      },
+      2: {
+        name: "Nivel 2: Impares (1-99)",
+        ruleText: "🎯 MISIÓN: NÚMEROS IMPARES",
+        isTarget: (n) => n % 2 !== 0,
+        genTarget: () => {
+          const odds = [1,3,5,7,9,11,13,15,17,19,21,23,25,27,29,31,33,35,37,39,41,43,45,47,49,51,53,55,57,59,61,63,65,67,69,71,73,75,77,79,81,83,85,87,89,91,93,95,97,99];
+          return odds[Math.floor(Math.random() * odds.length)];
+        },
+        genNonTarget: () => {
+          const evens = [2,4,6,8,10,12,14,16,18,20,22,24,26,28,30,32,34,36,38,40,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,88,90,92,94,96,98];
+          return evens[Math.floor(Math.random() * evens.length)];
+        }
+      },
+      3: {
+        name: "Nivel 3: Pares (100-999)",
+        ruleText: "🎯 MISIÓN: PARES (3 CIFRAS)",
+        isTarget: (n) => n >= 100 && n <= 999 && n % 2 === 0,
+        genTarget: () => Math.floor(Math.random() * 450) * 2 + 100,
+        genNonTarget: () => Math.floor(Math.random() * 450) * 2 + 101
+      },
+      4: {
+        name: "Nivel 4: Impares (100-999)",
+        ruleText: "🎯 MISIÓN: IMPARES (3 CIFRAS)",
+        isTarget: (n) => n >= 100 && n <= 999 && n % 2 !== 0,
+        genTarget: () => Math.floor(Math.random() * 450) * 2 + 101,
+        genNonTarget: () => Math.floor(Math.random() * 450) * 2 + 100
+      }
+    };
+
+    /* PALETAS DE COLOR DE LAS CASITAS NINTENDO */
+    const HOUSE_THEMES = [
+      { wall: "#fef08a", roof: "#ef4444", door: "#78350f" }, // Roja/Amarilla
+      { wall: "#a7f3d0", roof: "#10b981", door: "#064e3b" }, // Esmeralda
+      { wall: "#bae6fd", roof: "#3b82f6", door: "#1e3a8a" }, // Azul
+      { wall: "#fbcfe8", roof: "#a855f7", door: "#581c87" }, // Púrpura
+      { wall: "#fed7aa", roof: "#f97316", door: "#7c2d12" }  // Naranja
+    ];
+
+    /* ===================================================================
+       3. ESTADO GLOBAL Y AUDIO API SINTETIZADO
+       =================================================================== */
+    let selectedCharacter = CHARACTERS[0];
+    let selectedLevel = 1;
+    let gridMatrix = [];
+    let playerPos = { r: 0, c: 0 };
+    let visitedPath = [];
+    let movesCount = 0;
+    let errorsCount = 0;
+    let timerSeconds = 0;
+    let timerInterval = null;
+    let soundEnabled = true;
+
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    let audioCtx = null;
+
+    function initAudio() {
+      if (!audioCtx) audioCtx = new AudioCtx();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    function playSound(type) {
+      if (!soundEnabled) return;
+      initAudio();
+      if (!audioCtx) return;
+
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      if (type === 'step') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(523.25, now);
+        osc.frequency.exponentialRampToValueAtTime(880, now + 0.1);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.1);
+        osc.start(now);
+        osc.stop(now + 0.1);
+      } else if (type === 'error') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(160, now);
+        osc.frequency.setValueAtTime(110, now + 0.15);
+        gain.gain.setValueAtTime(0.25, now);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
+        osc.start(now);
+        osc.stop(now + 0.2);
+      } else if (type === 'hint') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(659.25, now);
+        osc.frequency.exponentialRampToValueAtTime(1318.51, now + 0.18);
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.18);
+        osc.start(now);
+        osc.stop(now + 0.18);
+      } else if (type === 'victory') {
+        const notes = [523.25, 659.25, 783.99, 1046.50];
+        notes.forEach((freq, idx) => {
+          const o = audioCtx.createOscillator();
+          const g = audioCtx.createGain();
+          o.connect(g);
+          g.connect(audioCtx.destination);
+          o.type = 'sine';
+          o.frequency.setValueAtTime(freq, now + idx * 0.1);
+          g.gain.setValueAtTime(0.2, now + idx * 0.1);
+          g.gain.linearRampToValueAtTime(0.01, now + idx * 0.1 + 0.25);
+          o.start(now + idx * 0.1);
+          o.stop(now + idx * 0.1 + 0.25);
+        });
+      }
+    }
+
+    /* ===================================================================
+       4. CONSTRUCCIÓN DE MATRIZ CON CAMINO GARANTIZADO
+       =================================================================== */
+    function buildSolvableBoard() {
+      const levelObj = LEVEL_RULES[selectedLevel];
+      gridMatrix = Array(5).fill(null).map((_, r) => 
+        Array(5).fill(null).map((_, c) => ({
+          r, c, 
+          value: 0, 
+          isPath: false,
+          theme: HOUSE_THEMES[(r * 2 + c) % HOUSE_THEMES.length]
+        }))
+      );
+
+      // Trazado de ruta garantizada de (0,0) a (4,4)
+      let r = 0, c = 0;
+      gridMatrix[0][0].isPath = true;
+
+      while (r < 4 || c < 4) {
+        if (r === 4) c++;
+        else if (c === 4) r++;
+        else {
+          if (Math.random() < 0.5) r++;
+          else c++;
+        }
+        gridMatrix[r][c].isPath = true;
+      }
+
+      // Asignar valores correctos e incorrectos
+      for (let i = 0; i < 5; i++) {
+        for (let j = 0; j < 5; j++) {
+          if (gridMatrix[i][j].isPath) {
+            gridMatrix[i][j].value = levelObj.genTarget();
+          } else {
+            if (Math.random() < 0.75) {
+              gridMatrix[i][j].value = levelObj.genNonTarget();
+            } else {
+              gridMatrix[i][j].value = levelObj.genTarget();
+            }
+          }
+        }
+      }
+
+      gridMatrix[0][0].value = levelObj.genTarget();
+      gridMatrix[4][4].value = levelObj.genTarget();
+    }
+
+    /* ===================================================================
+       5. GRÁFICOS ILUSTRADOS VECTORIALES (SVG DE CASAS ANIMAL CROSSING)
+       =================================================================== */
+    function generateHouseSVG(cell, isStart, isSchool) {
+      if (isSchool) {
+        return `
+          <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow-md">
+            <!-- Edificio Principal de la Escuela -->
+            <rect x="10" y="38" width="80" height="58" rx="4" fill="#f87171" stroke="#991b1b" stroke-width="2"/>
+            <polygon points="4,40 50,12 96,40" fill="#dc2626" stroke="#7f1d1d" stroke-width="2.5"/>
+            <!-- Torre de Campanario y Reloj -->
+            <rect x="36" y="4" width="28" height="26" fill="#fef08a" stroke="#b45309" stroke-width="2"/>
+            <polygon points="32,8 50,-2 68,8" fill="#b45309"/>
+            <circle cx="50" cy="17" r="5" fill="#ffffff" stroke="#1e293b" stroke-width="1.5"/>
+            <line x1="50" y1="17" x2="50" y2="13" stroke="#1e293b" stroke-width="1.5"/>
+            <line x1="50" y1="17" x2="53" y2="17" stroke="#1e293b" stroke-width="1.5"/>
+            <!-- Ventanas y Puertas Dobles -->
+            <rect x="18" y="50" width="16" height="18" fill="#fef08a" stroke="#1e293b" stroke-width="1.5"/>
+            <rect x="66" y="50" width="16" height="18" fill="#fef08a" stroke="#1e293b" stroke-width="1.5"/>
+            <path d="M 40 96 L 40 70 Q 50 64 60 70 L 60 96 Z" fill="#78350f" stroke="#451a03" stroke-width="2"/>
+          </svg>
+        `;
+      }
+
+      const t = cell.theme;
+      return `
+        <svg viewBox="0 0 100 100" class="w-full h-full drop-shadow-sm">
+          <!-- Humo animado de la chimenea -->
+          <circle cx="75" cy="14" r="3.5" fill="#e2e8f0" opacity="0.8" class="smoke-1"/>
+          <circle cx="78" cy="8" r="4.5" fill="#cbd5e1" opacity="0.6" class="smoke-2"/>
+          
+          <!-- Chimenea de Ladrillo -->
+          <rect x="70" y="18" width="10" height="18" fill="#b91c1c" stroke="#7f1d1d" stroke-width="1.2"/>
+          <line x1="70" y1="24" x2="80" y2="24" stroke="#7f1d1d" stroke-width="1"/>
+          
+          <!-- Pared Principal -->
+          <rect x="14" y="42" width="72" height="52" rx="5" fill="${t.wall}" stroke="#334155" stroke-width="2"/>
+          
+          <!-- Tejado 3D con textura -->
+          <polygon points="8,44 50,14 92,44" fill="${t.roof}" stroke="#1e293b" stroke-width="2.5"/>
+          <path d="M 16 38 Q 50 20 84 38" stroke="rgba(255,255,255,0.4)" stroke-width="3" fill="none"/>
+          
+          <!-- Arbustos con Flores en la base -->
+          <circle cx="16" cy="92" r="6" fill="#22c55e"/>
+          <circle cx="84" cy="92" r="6" fill="#22c55e"/>
+          <circle cx="16" cy="90" r="2" fill="#f43f5e"/>
+          <circle cx="84" cy="90" r="2" fill="#fcf6bd"/>
+
+          <!-- Ventanas Iluminadas -->
+          <rect x="22" y="52" width="16" height="16" rx="3" fill="#fef08a" stroke="#334155" stroke-width="1.5"/>
+          <line x1="30" y1="52" x2="30" y2="68" stroke="#334155" stroke-width="1"/>
+          <line x1="22" y1="60" x2="38" y2="60" stroke="#334155" stroke-width="1"/>
+
+          <rect x="62" y="52" width="16" height="16" rx="3" fill="#fef08a" stroke="#334155" stroke-width="1.5"/>
+          <line x1="70" y1="52" x2="70" y2="68" stroke="#334155" stroke-width="1"/>
+          <line x1="62" y1="60" x2="78" y2="60" stroke="#334155" stroke-width="1"/>
+
+          <!-- Puerta con Picaporte -->
+          <path d="M 43 94 L 43 68 Q 50 63 57 68 L 57 94 Z" fill="${t.door}" stroke="#1e293b" stroke-width="1.5"/>
+          <circle cx="54" cy="81" r="1.5" fill="#facc15"/>
+        </svg>
+      `;
+    }
+
+    /* ===================================================================
+       6. RENDERIZADO DEL TABLERO Y PARPADEO ELEGANTE DE CASAS ACCESIBLES
+       =================================================================== */
+    function renderBoardGrid() {
+      const gridElem = document.getElementById('game-grid-5x5');
+      gridElem.innerHTML = '';
+
+      // CASILLAS VECINAS A LAS QUE SE PUEDE MOVER (ARRIBA, ABAJO, IZQUIERDA, DERECHA)
+      const validNeighbors = [
+        { r: playerPos.r - 1, c: playerPos.c },
+        { r: playerPos.r + 1, c: playerPos.c },
+        { r: playerPos.r, c: playerPos.c - 1 },
+        { r: playerPos.r, c: playerPos.c + 1 }
+      ].filter(p => p.r >= 0 && p.r < 5 && p.c >= 0 && p.c < 5);
+
+      for (let r = 0; r < 5; r++) {
+        for (let c = 0; c < 5; c++) {
+          const cell = gridMatrix[r][c];
+          const isPlayerHere = (playerPos.r === r && playerPos.c === c);
+          const isVisited = visitedPath.some(p => p.r === r && p.c === c);
+          const isStart = (r === 0 && c === 0);
+          const isSchool = (r === 4 && c === 4);
+          const isReachableNeighbor = validNeighbors.some(p => p.r === r && p.c === c);
+
+          const houseTile = document.createElement('div');
+          houseTile.dataset.r = r;
+          houseTile.dataset.c = c;
+
+          let tileClasses = "relative rounded-2xl flex flex-col items-center justify-between p-1 transition-all duration-300 select-none overflow-visible ";
+
+          if (isPlayerHere) {
+            tileClasses += "ring-4 ring-amber-400 bg-amber-100/90 scale-105 z-30 shadow-2xl ";
+          } else if (isReachableNeighbor) {
+            // ¡PARPADEO Y RESPLANDOR DORADO/NEÓN ÚNICAMENTE EN LA CASA!
+            tileClasses += "reachable-house-glow bg-cyan-100/95 border-2 border-cyan-400 ";
+          } else if (isVisited) {
+            tileClasses += "bg-emerald-50/80 border border-emerald-300 opacity-90 ";
+          } else {
+            tileClasses += "bg-white/70 border border-white/50 opacity-85 ";
+          }
+
+          houseTile.className = tileClasses;
+
+          let contentHTML = '';
+
+          // Badges de Inicio y Escuela
+          if (isStart) {
+            contentHTML += `<span class="absolute -top-2.5 z-30 bg-indigo-600 text-white font-black text-[9px] sm:text-[11px] px-2 py-0.5 rounded-full shadow border border-white">INICIO 🚩</span>`;
+          } else if (isSchool) {
+            contentHTML += `<span class="absolute -top-2.5 z-30 bg-rose-600 text-white font-black text-[9px] sm:text-[11px] px-2 py-0.5 rounded-full shadow border border-white">ESCUELA 🏫</span>`;
+          }
+
+          // SVG de la Casa
+          contentHTML += `<div class="w-full h-full absolute inset-0 p-1 pointer-events-none z-0">
+                            ${generateHouseSVG(cell, isStart, isSchool)}
+                          </div>`;
+
+          // Avatar del Jugador o Letrero de Madera con Número
+          if (isPlayerHere) {
+            contentHTML += `
+              <div class="relative z-20 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-white p-0.5 shadow-lg my-auto animate-bounce ring-2 ring-amber-400">
+                ${getAvatarHTML(selectedCharacter, 'w-full h-full')}
+              </div>
+            `;
+          } else {
+            contentHTML += `
+              <div class="relative z-10 my-auto bg-gradient-to-b from-amber-100 to-amber-200 border-2 border-amber-800 rounded-lg px-1.5 sm:px-2 py-0.5 shadow text-center max-w-[85%]">
+                <span class="wood-number-text text-xs sm:text-lg block leading-none">
+                  ${cell.value}
+                </span>
+              </div>
+            `;
+          }
+
+          if (isVisited && !isPlayerHere) {
+            contentHTML += `<div class="absolute bottom-1 right-1 z-20 text-emerald-600 text-xs sm:text-sm"><i class="fa-solid fa-circle-check"></i></div>`;
+          }
+
+          houseTile.innerHTML = contentHTML;
+          houseTile.addEventListener('click', () => onTileClicked(r, c));
+
+          gridElem.appendChild(houseTile);
+        }
+      }
+    }
+
+    function getAvatarHTML(char, extraClasses = '') {
+      return `
+        <img src="${char.img}" alt="${char.name}" class="${extraClasses} rounded-full object-cover" 
+             onerror="this.onerror=null; this.parentElement.innerHTML='${char.svg.replace(/'/g, "\\'")}';">
+      `;
+    }
+
+    /* ===================================================================
+       7. SELECTOR DE PERSONAJES
+       =================================================================== */
+    function renderCharacterSelector() {
+      const container = document.getElementById('character-selector-grid');
+      container.innerHTML = '';
+
+      CHARACTERS.forEach(char => {
+        const isSelected = char.id === selectedCharacter.id;
+        const btn = document.createElement('button');
+
+        btn.className = `flex flex-col items-center justify-between p-1.5 rounded-2xl transition border-2 ${
+          isSelected 
+            ? 'bg-amber-100 border-amber-500 ring-2 ring-amber-400 scale-105 shadow-md' 
+            : 'bg-white/90 border-slate-200 hover:border-slate-300 opacity-80'
+        }`;
+
+        btn.innerHTML = `
+          <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-tr ${char.color} p-0.5 shadow">
+            ${getAvatarHTML(char, 'w-full h-full')}
+          </div>
+          <span class="mt-1 font-black text-[10px] sm:text-xs px-1.5 py-0.5 rounded-md text-white ${char.badgeBg} shadow-sm w-full text-center truncate">
+            ${char.name}
+          </span>
+        `;
+
+        btn.addEventListener('click', () => {
+          selectedCharacter = char;
+          renderCharacterSelector();
+          updateHUDAvatar();
+        });
+
+        container.appendChild(btn);
+      });
+    }
+
+    function updateHUDAvatar() {
+      const frame = document.getElementById('hud-avatar-frame');
+      const nameElem = document.getElementById('hud-character-name');
+
+      frame.className = `w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-tr ${selectedCharacter.color} p-0.5 shadow-md flex-shrink-0 border-2 border-white`;
+      frame.innerHTML = getAvatarHTML(selectedCharacter, 'w-full h-full');
+      nameElem.innerText = selectedCharacter.name;
+    }
+
+    /* ===================================================================
+       8. CONTROLES Y MOVIMIENTO
+       =================================================================== */
+    function onTileClicked(targetR, targetC) {
+      const distR = Math.abs(targetR - playerPos.r);
+      const distC = Math.abs(targetC - playerPos.c);
+      const isAdjacent = (distR + distC === 1);
+
+      if (!isAdjacent) return;
+
+      const levelObj = LEVEL_RULES[selectedLevel];
+      const targetCell = gridMatrix[targetR][targetC];
+      const isValid = levelObj.isTarget(targetCell.value);
+
+      if (isValid) {
+        playSound('step');
+        playerPos = { r: targetR, c: targetC };
+        visitedPath.push({ r: targetR, c: targetC });
+        movesCount++;
+        document.getElementById('display-moves').innerText = `Pasos: ${movesCount}`;
+
+        renderBoardGrid();
+
+        if (targetR === 4 && targetC === 4) {
+          onVictoryReached();
+        }
+      } else {
+        playSound('error');
+        errorsCount++;
+
+        const houseElem = document.querySelector(`[data-r="${targetR}"][data-c="${targetC}"]`);
+        if (houseElem) {
+          houseElem.classList.add('shake-error');
+          setTimeout(() => houseElem.classList.remove('shake-error'), 450);
+        }
+      }
+    }
+
+    // Teclado
+    document.addEventListener('keydown', (e) => {
+      let tr = playerPos.r;
+      let tc = playerPos.c;
+
+      if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') tr--;
+      else if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') tr++;
+      else if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') tc--;
+      else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') tc++;
+      else return;
+
+      if (tr >= 0 && tr < 5 && tc >= 0 && tc < 5) {
+        onTileClicked(tr, tc);
+      }
+    });
+
+    // D-Pad Táctil
+    document.getElementById('dpad-up').addEventListener('click', () => moveOffset(-1, 0));
+    document.getElementById('dpad-down').addEventListener('click', () => moveOffset(1, 0));
+    document.getElementById('dpad-left').addEventListener('click', () => moveOffset(0, -1));
+    document.getElementById('dpad-right').addEventListener('click', () => moveOffset(0, 1));
+
+    function moveOffset(dr, dc) {
+      const tr = playerPos.r + dr;
+      const tc = playerPos.c + dc;
+      if (tr >= 0 && tr < 5 && tc >= 0 && tc < 5) {
+        onTileClicked(tr, tc);
+      }
+    }
+
+    document.getElementById('btn-hint').addEventListener('click', () => {
+      playSound('hint');
+      renderBoardGrid();
+    });
+
+    /* ===================================================================
+       9. GESTIÓN DE TIEMPO Y SESIÓN
+       =================================================================== */
+    function startTimer() {
+      stopTimer();
+      timerSeconds = 0;
+      updateTimerUI();
+      timerInterval = setInterval(() => {
+        timerSeconds++;
+        updateTimerUI();
+      }, 1000);
+    }
+
+    function stopTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+    }
+
+    function updateTimerUI() {
+      const m = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
+      const s = (timerSeconds % 60).toString().padStart(2, '0');
+      document.getElementById('display-timer').innerText = `${m}:${s}`;
+    }
+
+    function startNewGameSession() {
+      playerPos = { r: 0, c: 0 };
+      visitedPath = [{ r: 0, c: 0 }];
+      movesCount = 0;
+      errorsCount = 0;
+      document.getElementById('display-moves').innerText = 'Pasos: 0';
+
+      const levelObj = LEVEL_RULES[selectedLevel];
+      document.getElementById('display-level-name').innerText = `Nivel ${selectedLevel}`;
+      document.getElementById('display-rule-text').innerText = levelObj.ruleText;
+
+      buildSolvableBoard();
+      renderBoardGrid();
+      updateHUDAvatar();
+      startTimer();
+    }
+
+    /* ===================================================================
+       10. VICTORIA Y CONFETI
+       =================================================================== */
+    function onVictoryReached() {
+      stopTimer();
+      playSound('victory');
+
+      let stars = 3;
+      if (errorsCount >= 4) stars = 1;
+      else if (errorsCount >= 2) stars = 2;
+
+      const starsContainer = document.getElementById('victory-stars');
+      starsContainer.innerHTML = '';
+      for (let i = 1; i <= 3; i++) {
+        starsContainer.innerHTML += (i <= stars) 
+          ? `<i class="fa-solid fa-star text-amber-400"></i>` 
+          : `<i class="fa-regular fa-star text-slate-300"></i>`;
+      }
+
+      document.getElementById('victory-time-val').innerText = document.getElementById('display-timer').innerText;
+      document.getElementById('victory-moves-val').innerText = `${movesCount} pasos (${errorsCount} fallos)`;
+
+      document.getElementById('victory-modal').classList.remove('hidden');
+      triggerConfetti();
+    }
+
+    function triggerConfetti() {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const particles = [];
+      const colors = ['#f59e0b', '#10b981', '#3b82f6', '#ec4899', '#8b5cf6', '#facc15'];
+
+      for (let i = 0; i < 90; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          vx: (Math.random() - 0.5) * 14,
+          vy: (Math.random() - 0.7) * 14,
+          size: Math.random() * 8 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          rotation: Math.random() * 360,
+          vRot: (Math.random() - 0.5) * 8
+        });
+      }
+
+      let frame = 0;
+      function loop() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.22;
+          p.rotation += p.vRot;
+
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+          ctx.restore();
+        });
+
+        frame++;
+        if (frame < 120) requestAnimationFrame(loop);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      loop();
+    }
+
+    /* ===================================================================
+       11. INICIALIZACIÓN
+       =================================================================== */
+    document.getElementById('btn-start-game').addEventListener('click', () => {
+      initAudio();
+      document.getElementById('welcome-modal').classList.add('hidden');
+      startNewGameSession();
+    });
+
+    document.querySelectorAll('.level-card-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        document.querySelectorAll('.level-card-btn').forEach(b => {
+          b.classList.remove('ring-4', 'ring-amber-400', 'border-amber-500');
+        });
+        const clicked = e.currentTarget;
+        clicked.classList.add('ring-4', 'ring-amber-400', 'border-amber-500');
+        selectedLevel = parseInt(clicked.dataset.level);
+      });
+    });
+
+    document.getElementById('btn-open-menu').addEventListener('click', () => {
+      stopTimer();
+      renderCharacterSelector();
+      document.getElementById('welcome-modal').classList.remove('hidden');
+    });
+
+    document.getElementById('btn-victory-next').addEventListener('click', () => {
+      document.getElementById('victory-modal').classList.add('hidden');
+      selectedLevel = (selectedLevel % 4) + 1;
+      startNewGameSession();
+    });
+
+    document.getElementById('btn-victory-replay').addEventListener('click', () => {
+      document.getElementById('victory-modal').classList.add('hidden');
+      startNewGameSession();
+    });
+
+    document.getElementById('btn-toggle-sound').addEventListener('click', () => {
+      soundEnabled = !soundEnabled;
+      const icon = document.getElementById('sound-icon');
+      icon.className = soundEnabled ? 'fa-solid fa-volume-high' : 'fa-solid fa-volume-xmark';
+    });
+
+    window.onload = function() {
+      renderCharacterSelector();
+      const firstLevelBtn = document.querySelector('.level-card-btn[data-level="1"]');
+      if (firstLevelBtn) firstLevelBtn.classList.add('ring-4', 'ring-amber-400', 'border-amber-500');
+    };
+  </script>
+</body>
+</html>
